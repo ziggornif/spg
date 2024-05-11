@@ -1656,9 +1656,9 @@ dependencies = [
 
 [[package]]
 name = "langchain-rust"
-version = "4.1.0"
+version = "4.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44372931fbc7d664f3338bcabd28916e20aba52c2918b0aec5a65168741ee42a"
+checksum = "c91d3581f4f796c46e69439dc102fc012206b64d67db73ab6e96e3f3a81f5d2d"
 dependencies = [
  "async-openai",
  "async-recursion",

@@ -55,8 +55,7 @@ window.onload = async function () {
     const messagesDiv = document.getElementById("messages");
     const robotPrompt = document.createElement('p');
     addLoader(messagesDiv);
-    console.log(document.querySelector('input[name="theme"]:checked').value);
-    const prompt = preparePrompt(document.querySelector('input[name="theme"]:checked').value);
+    const prompt = preparePrompt(document.querySelector('input[name="theme"]:checked')?.value);
     console.log('Sent prompt :', prompt);
     const reader = await postPrompt(prompt).catch(error => {
       console.log(error)

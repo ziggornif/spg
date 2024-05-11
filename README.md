@@ -9,7 +9,7 @@ LLM powered side projects generator.
 
 ## Requirements
 
-- [Ollama](https://ollama.com/)
+- [Ollama](https://ollama.com/) < 1.35 (there is an issue with the response format of 1.35+ version)
 - [LLM model of your choice (default: llama3)](https://ollama.com/library)
 
 ## Quickstart
