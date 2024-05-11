@@ -3,7 +3,7 @@
 ![feris logo](./src/public/assets/img/logo.png)
 
 
-IA powered side projects generator.
+LLM powered side projects generator.
 
 *Assistant speaks in French.*
 
@@ -28,4 +28,4 @@ The application should run at http://localhost:8080.
 
 ## Demo
 
-Add a link here...
+https://youtu.be/BMTvc3OF9Pk
