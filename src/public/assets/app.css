@@ -1,0 +1,9 @@
+.query {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.generator {
+  text-align: center;
+}

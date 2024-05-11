@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Side project generator 🚀</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"/>
+  <script type="module" src='assets/app.js'></script>
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+  <header class="container">
+    <hgroup>
+      <div align="center">
+        <img src="assets/img/logo.png" alt="Application logo">
+        <h1>Side project generator</h1>
+      </div>
+    </hgroup>
+  </header>
+
+  <main class="container">
+    <section id="content">
+      <div id="messages">
+      </div>
+    </section>
+
+    <section id="query" class="query" >
+      
+      <div>
+        <fieldset>
+          <legend>Thématique :</legend>
+          <input type="radio" id="ecology" name="theme" value="ecology"/>
+          <label for="ecology">Écologie</label>
+          <input type="radio" id="3dprint" name="theme" value="3dprint"/>
+          <label for="3dprint">Impression 3D</label>
+          <input type="radio" id="music" name="theme" value="music"/>
+          <label for="music">Musique</label>
+          <input type="radio" id="cooking" name="theme" value="cooking"/>
+          <label for="cooking">Cuisine</label>
+        </fieldset>
+        <div class="generator">
+          <button type="button" id="generator" class="outline">Génère une idée de side project 🪄✨</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
