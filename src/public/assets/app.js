@@ -1,7 +1,7 @@
 import markdownIt from 'https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/+esm';
 
 async function postPrompt(theme) {
-  const resp = await fetch("/prompt", {
+  const resp = await fetch("/api/prompt", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -5,9 +5,10 @@ use langchain_rust::chain::Chain;
 use langchain_rust::prompt_args;
 use serde::Deserialize;
 use tera::{Context, Tera};
+use utoipa::ToSchema;
 
-#[derive(Deserialize, Debug, Clone)]
-struct PromptRequest {
+#[derive(Deserialize, ToSchema, Debug, Clone)]
+pub struct PromptRequest {
     pub theme: String,
 }
 
@@ -34,7 +35,14 @@ pub async fn home(data: web::Data<State>, tera: web::Data<Tera>) -> impl Respond
     HttpResponse::Ok().body(template)
 }
 
-#[post("/prompt")]
+#[utoipa::path(
+  request_body = PromptRequest,
+  responses(
+      (status = 200, description = "AI response"),
+      (status = 500, description = "Internal error")
+  )
+)]
+#[post("/api/prompt")]
 async fn send_prompt(data: web::Data<State>, request: web::Json<PromptRequest>) -> impl Responder {
     let prompt = prepare_prompt(&request.theme, &data.themes);
     let input_variables = prompt_args! {

@@ -4,6 +4,8 @@ use lazy_static::lazy_static;
 use side_project_generator::{routes, state::load_state};
 use std::env;
 use tera::Tera;
+use utoipa::OpenApi;
+use utoipa_redoc::{Redoc, Servable};
 
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
@@ -27,12 +29,22 @@ async fn main() -> std::io::Result<()> {
         .parse::<u16>()
         .expect("Invalid port");
 
+    #[derive(OpenApi)]
+    #[openapi(
+        info(title = "SPG", description = "Side project generator API"),
+        paths(routes::send_prompt),
+        components(schemas(routes::PromptRequest))
+    )]
+    struct ApiDoc;
+    let openapi = ApiDoc::openapi();
+
     let server = HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(TEMPLATES.clone()))
             .app_data(load_state(&ollama_base_url, &model).unwrap())
             .service(routes::home)
             .service(routes::send_prompt)
+            .service(Redoc::with_url("/redoc", openapi.clone()))
             .service(
                 Files::new("/assets", "src/public/assets")
                     .prefer_utf8(true)
