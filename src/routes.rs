@@ -12,8 +12,8 @@ pub struct PromptRequest {
     pub theme: String,
 }
 
-fn prepare_prompt(theme: &str, themes: &Vec<Theme>) -> String {
-    let theme = themes.into_iter().find(|t| t.reference == theme);
+fn prepare_prompt(theme: &str, themes: &[Theme]) -> String {
+    let theme = themes.iter().find(|t| t.reference == theme);
     if let Some(theme) = theme {
         format!(
             "Propose moi une nouvelle idée de projet sur le thème {}.",

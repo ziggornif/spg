@@ -10,7 +10,7 @@ use utoipa_redoc::{Redoc, Servable};
 lazy_static! {
     pub static ref TEMPLATES: Tera = {
         let mut tera = Tera::default();
-        tera.add_raw_template("index.html", include_str!("./public/index.html"))
+        tera.add_raw_template("index.html", include_str!("../public/index.html"))
             .expect("Expected template");
         tera.autoescape_on(vec![".html"]);
         tera
@@ -46,7 +46,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::send_prompt)
             .service(Redoc::with_url("/redoc", openapi.clone()))
             .service(
-                Files::new("/assets", "src/public/assets")
+                Files::new("/assets", "./public/assets")
                     .prefer_utf8(true)
                     .use_last_modified(true),
             )
