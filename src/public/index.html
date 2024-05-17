@@ -30,14 +30,10 @@
       <div>
         <fieldset>
           <legend>Thématique :</legend>
-          <input type="radio" id="ecology" name="theme" value="ecology"/>
-          <label for="ecology">Écologie</label>
-          <input type="radio" id="3dprint" name="theme" value="3dprint"/>
-          <label for="3dprint">Impression 3D</label>
-          <input type="radio" id="music" name="theme" value="music"/>
-          <label for="music">Musique</label>
-          <input type="radio" id="cooking" name="theme" value="cooking"/>
-          <label for="cooking">Cuisine</label>
+          {% for theme in themes %}
+          <input type="radio" id="{{theme.reference}}" name="theme" value="{{theme.reference}}"/>
+          <label for="{{theme.reference}}">{{theme.title}}</label>
+          {% endfor %}
         </fieldset>
         <div class="generator">
           <button type="button" id="generator" class="outline">Génère une idée de side project 🪄✨</button>

@@ -1,13 +1,13 @@
 import markdownIt from 'https://cdn.jsdelivr.net/npm/markdown-it@14.1.0/+esm';
 
-async function postPrompt(promptMessage) {
+async function postPrompt(theme) {
   const resp = await fetch("/prompt", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      question: promptMessage,
+      theme,
     })
   })
 
@@ -31,21 +31,6 @@ function removeLoader(element) {
   element.removeChild(child);
 }
 
-function preparePrompt(theme) {
-  switch (theme) {
-    case "ecology":
-      return "Propose moi une nouvelle idée de projet sur le thème de l'écologie."
-    case "3dprint":
-      return "Propose moi une nouvelle idée de projet sur le thème de l'impression 3D."
-    case "music":
-      return "Propose moi une nouvelle idée de projet sur le thème de la musique."
-    case "cooking":
-      return "Propose moi une nouvelle idée de projet sur le thème de la cuisine."
-    default:
-      return "Propose moi une nouvelle idée de projet."
-  }
-}
-
 window.onload = async function () {
   const promptForm = document.getElementById("generator");
 
@@ -55,9 +40,8 @@ window.onload = async function () {
     const messagesDiv = document.getElementById("messages");
     const robotPrompt = document.createElement('p');
     addLoader(messagesDiv);
-    const prompt = preparePrompt(document.querySelector('input[name="theme"]:checked')?.value);
-    console.log('Sent prompt :', prompt);
-    const reader = await postPrompt(prompt).catch(error => {
+    const theme = document.querySelector('input[name="theme"]:checked')?.value;
+    const reader = await postPrompt(theme).catch(error => {
       console.log(error)
       return;
     });

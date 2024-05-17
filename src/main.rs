@@ -1,42 +1,18 @@
-use actix_web::{http::header::ContentType, post, web, App, HttpResponse, HttpServer, Responder};
-use futures::stream::StreamExt;
-use langchain_rust::chain::Chain;
-use langchain_rust::prompt_args;
-use serde::Deserialize;
-use side_project_generator::state::{load_state, State};
+use actix_files::Files;
+use actix_web::{web, App, HttpServer};
+use lazy_static::lazy_static;
+use side_project_generator::{routes, state::load_state};
 use std::env;
+use tera::Tera;
 
-#[derive(Deserialize, Debug, Clone)]
-struct PromptRequest {
-    pub question: String,
-}
-
-#[post("/prompt")]
-async fn send_prompt(data: web::Data<State>, request: web::Json<PromptRequest>) -> impl Responder {
-    let input_variables = prompt_args! {
-        "input" => request.question,
+lazy_static! {
+    pub static ref TEMPLATES: Tera = {
+        let mut tera = Tera::default();
+        tera.add_raw_template("index.html", include_str!("./public/index.html"))
+            .expect("Expected template");
+        tera.autoescape_on(vec![".html"]);
+        tera
     };
-
-    let stream_result = data.chain.stream(input_variables).await;
-    match stream_result {
-        Ok(stream) => {
-            let stream = Box::pin(stream);
-            let transformed_stream = stream.map(|result| match result {
-                Ok(data) => Ok(actix_web::web::Bytes::from(data.content)),
-                Err(e) => Err(actix_web::error::ErrorInternalServerError(format!(
-                    "Stream error: {:?}",
-                    e
-                ))),
-            });
-
-            HttpResponse::Ok()
-                .content_type(ContentType::plaintext())
-                .streaming(transformed_stream)
-        }
-        Err(e) => {
-            HttpResponse::InternalServerError().body(format!("Error creating stream: {:?}", e))
-        }
-    }
 }
 
 #[actix_web::main]
@@ -53,12 +29,13 @@ async fn main() -> std::io::Result<()> {
 
     let server = HttpServer::new(move || {
         App::new()
-            .service(send_prompt)
+            .app_data(web::Data::new(TEMPLATES.clone()))
             .app_data(load_state(&ollama_base_url, &model).unwrap())
+            .service(routes::home)
+            .service(routes::send_prompt)
             .service(
-                actix_files::Files::new("/", "src/public")
-                    .show_files_listing()
-                    .index_file("index.html")
+                Files::new("/assets", "src/public/assets")
+                    .prefer_utf8(true)
                     .use_last_modified(true),
             )
     })
