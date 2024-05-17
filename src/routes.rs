@@ -1,4 +1,4 @@
-use crate::state::State;
+use crate::{state::State, theme::Theme};
 use actix_web::{get, http::header::ContentType, post, web, HttpResponse, Responder};
 use futures::stream::StreamExt;
 use langchain_rust::chain::Chain;
@@ -11,22 +11,15 @@ struct PromptRequest {
     pub theme: String,
 }
 
-// TODO: simplify this
-fn prepare_prompt(theme: &str) -> String {
-    match theme {
-        "ecology" => {
-            "Propose moi une nouvelle idée de projet sur le thème de l'écologie.".to_string()
-        }
-        "3dprint" => {
-            "Propose moi une nouvelle idée de projet sur le thème de l'impression 3D.".to_string()
-        }
-        "music" => {
-            "Propose moi une nouvelle idée de projet sur le thème de la musique.".to_string()
-        }
-        "cooking" => {
-            "Propose moi une nouvelle idée de projet sur le thème de la cuisine.".to_string()
-        }
-        _ => "Propose moi une nouvelle idée de projet.".to_string(),
+fn prepare_prompt(theme: &str, themes: &Vec<Theme>) -> String {
+    let theme = themes.into_iter().find(|t| t.reference == theme);
+    if let Some(theme) = theme {
+        format!(
+            "Propose moi une nouvelle idée de projet sur le thème {}.",
+            theme.title
+        )
+    } else {
+        "Propose moi une nouvelle idée de projet".to_owned()
     }
 }
 
@@ -43,7 +36,7 @@ pub async fn home(data: web::Data<State>, tera: web::Data<Tera>) -> impl Respond
 
 #[post("/prompt")]
 async fn send_prompt(data: web::Data<State>, request: web::Json<PromptRequest>) -> impl Responder {
-    let prompt = prepare_prompt(&request.theme);
+    let prompt = prepare_prompt(&request.theme, &data.themes);
     let input_variables = prompt_args! {
         "input" => prompt,
     };

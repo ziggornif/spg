@@ -18,19 +18,6 @@ async function postPrompt(theme) {
   return resp.body.getReader();
 }
 
-function addLoader(element) {
-  const loader = document.createElement('span');
-  loader.setAttribute("aria-busy", "true")
-  loader.id = "loader";
-  loader.textContent = "🤖 is typing...";
-  element.appendChild(loader)
-}
-
-function removeLoader(element) {
-  const child = document.getElementById("loader");
-  element.removeChild(child);
-}
-
 window.onload = async function () {
   const promptForm = document.getElementById("generator");
 
@@ -39,13 +26,12 @@ window.onload = async function () {
     const promptElem = document.getElementById("query");
     const messagesDiv = document.getElementById("messages");
     const robotPrompt = document.createElement('p');
-    addLoader(messagesDiv);
     const theme = document.querySelector('input[name="theme"]:checked')?.value;
+    promptForm.disabled = true;
     const reader = await postPrompt(theme).catch(error => {
       console.log(error)
       return;
     });
-    removeLoader(messagesDiv);
     robotPrompt.innerHTML = "";
     messagesDiv.appendChild(robotPrompt);
     const decoder = new TextDecoder('utf-8');  
@@ -54,7 +40,9 @@ window.onload = async function () {
     const readStream = () => {
       reader.read().then(({ done, value }) => {
         if (done) {
-            return;
+          messagesDiv.appendChild(document.createElement("hr"));
+          promptForm.disabled = false;
+          return;
         }
         const chunkString = decoder.decode(value);
         text += chunkString;
@@ -66,6 +54,5 @@ window.onload = async function () {
       });
     };
     readStream();
-    messagesDiv.appendChild(document.createElement("hr"));
   })
 }
