@@ -1,6 +1,6 @@
 # Side project generator
 
-![feris logo](./src/public/assets/img/logo.png)
+![feris logo](./public/assets/img/logo.png)
 
 
 LLM powered side projects generator.
